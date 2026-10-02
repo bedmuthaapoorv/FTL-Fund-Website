@@ -36,6 +36,10 @@ class Settings(BaseSettings):
     #   python -c "from cryptography.fernet import Fernet; print(Fernet.generate_key().decode())"
     data_encryption_key: str = ""
 
+    # Path to the built website (web/dist). When set, the API also serves the
+    # site from the same origin. Leave unset in dev (Vite serves it).
+    static_dir: str | None = None
+
     # Session lifetimes.
     session_idle_minutes: int = 30
     session_absolute_hours: int = 8
@@ -49,6 +53,21 @@ class Settings(BaseSettings):
     @property
     def secure_cookies(self) -> bool:
         return self.env == "prod"
+
+    def production_problems(self) -> list[str]:
+        """Misconfigurations that must stop a production boot."""
+        p = []
+        if not self.site_url.startswith("https://"):
+            p.append("SITE_URL must be https://")
+        if not self.data_encryption_key:
+            p.append("DATA_ENCRYPTION_KEY is not set")
+        if len(self.sync_secret) < 32:
+            p.append("SYNC_SECRET must be at least 32 characters")
+        if self.database_url.startswith("sqlite"):
+            p.append("DATABASE_URL should point at managed Postgres (with backups) in production")
+        if self.email_backend != "smtp" or not self.smtp_password:
+            p.append("EMAIL_BACKEND=smtp and SMTP credentials are required")
+        return p
 
 
 @lru_cache
