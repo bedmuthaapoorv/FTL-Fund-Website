@@ -1,7 +1,6 @@
 """Proves an investor can only ever see their own data, no matter what IDs
 they put in the request."""
 
-from fastapi.routing import APIRoute
 from sqlalchemy import select
 
 from app.main import app
@@ -80,29 +79,45 @@ def test_unlinked_investor_sees_nothing():
         assert c.get(f"/api/me/events/{eid}").status_code == 404
 
 
+def all_routes() -> list[tuple[str, str, dict]]:
+    """(method, path, operation) for every API route, via the public OpenAPI
+    schema so the scan doesn't depend on FastAPI's internal route objects."""
+    return [
+        (m.upper(), path, op)
+        for path, ops in app.openapi()["paths"].items()
+        for m, op in ops.items()
+    ]
+
+
+def test_route_scan_sees_the_whole_api():
+    paths = {p for _, p, _ in all_routes()}
+    assert {"/api/me/summary", "/api/me/events/{event_id}", "/api/admin/users", "/api/sync"} <= paths
+
+
 def test_every_non_public_route_requires_auth(anon):
     """Guards against a future route that forgets its auth dependency."""
     seed_fund()
     checked = 0
-    for route in app.routes:
-        if not isinstance(route, APIRoute) or not route.path.startswith("/api") or route.path in PUBLIC:
+    for method, path, _ in all_routes():
+        if path in PUBLIC or path.startswith("/api/auth/"):
             continue
-        if route.path.startswith(("/api/auth/", "/api/docs", "/api/openapi")):
-            continue
-        path = route.path.replace("{event_id}", "1").replace("{user_id}", "1").replace("{doc_id}", "1")
-        for method in route.methods - {"HEAD", "OPTIONS"}:
-            r = anon.request(method, path, json={})
-            assert r.status_code in (401, 403), f"{method} {route.path} -> {r.status_code}"
-            checked += 1
-    assert checked >= 4
+        url = path.replace("{event_id}", "1").replace("{user_id}", "1").replace("{doc_id}", "1")
+        r = anon.request(method, url, json={})
+        assert r.status_code in (401, 403), f"{method} {path} -> {r.status_code}"
+        checked += 1
+    assert checked >= 12
 
 
 def test_no_investor_route_takes_an_investor_id():
     """Investor-facing routes must derive scope from the session only."""
-    for route in app.routes:
-        if isinstance(route, APIRoute) and route.path.startswith(("/api/me", "/api/fund")):
-            names = {p.name.lower() for p in route.dependant.path_params + route.dependant.query_params}
-            assert not any("investor" in n for n in names), route.path
+    checked = 0
+    for _, path, op in all_routes():
+        if path.startswith(("/api/me", "/api/fund")):
+            names = {prm["name"].lower() for prm in op.get("parameters", [])}
+            assert not any("investor" in n for n in names), path
+            assert "requestBody" not in op, path
+            checked += 1
+    assert checked >= 4
 
 
 def test_mfa_pending_session_cannot_read_data():
