@@ -1,0 +1,17 @@
+{
+  "version": "0.0.1",
+  "configurations": [
+    {
+      "name": "web",
+      "runtimeExecutable": "npm",
+      "runtimeArgs": ["--prefix", "/Users/apoorv/Projects/frontier-tradelight-website/web", "run", "dev"],
+      "port": 5180
+    },
+    {
+      "name": "api",
+      "runtimeExecutable": "/Users/apoorv/Projects/frontier-tradelight-website/api/.venv/bin/uvicorn",
+      "runtimeArgs": ["app.main:app", "--app-dir", "/Users/apoorv/Projects/frontier-tradelight-website/api", "--port", "8100", "--reload", "--reload-dir", "/Users/apoorv/Projects/frontier-tradelight-website/api/app"],
+      "port": 8100
+    }
+  ]
+}

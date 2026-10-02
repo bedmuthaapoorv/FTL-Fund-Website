@@ -1,0 +1,23 @@
+# Secrets: only .env.example is committed
+.env
+.env.*
+!.env.example
+
+# Python
+.venv/
+__pycache__/
+*.pyc
+.pytest_cache/
+*.db
+*.db-journal
+
+# Node
+node_modules/
+dist/
+.vite-react-ssg-temp/
+
+# Local logs / runtime
+*.log
+api/storage/
+sync/out/
+.DS_Store

@@ -1,0 +1,60 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Design tokens. Space-separated RGB so Tailwind can apply alpha.
+   Brand: FrontierTradeLight's deep green (#3D5944) on a neutral base. */
+:root {
+  --ground: 247 247 248;     /* #F7F7F8 */
+  --surface: 255 255 255;
+  --ink: 17 19 24;           /* #111318 */
+  --muted: 91 97 110;        /* #5B616E */
+  --line: 229 231 235;       /* #E5E7EB */
+  --accent: 61 89 68;        /* #3D5944 */
+  --accent-hover: 49 72 57;  /* #314839 */
+  --accent-soft: 234 240 235;
+  --accent-ink: 255 255 255; /* text on accent fills */
+  --warn: 146 86 14;
+  --warn-soft: 253 246 232;
+  color-scheme: light;
+}
+[data-theme='dark'] {
+  --ground: 13 16 14;        /* near-black, faint green cast */
+  --surface: 21 26 23;
+  --ink: 232 236 233;
+  --muted: 154 163 157;
+  --line: 39 46 41;
+  --accent: 143 181 154;     /* lifted brand green for contrast on dark */
+  --accent-hover: 169 200 178;
+  --accent-soft: 26 36 29;
+  --accent-ink: 13 16 14;
+  --warn: 232 185 110;
+  --warn-soft: 40 32 18;
+  color-scheme: dark;
+}
+
+html {
+  font-family: 'Manrope', system-ui, sans-serif;
+  -webkit-text-size-adjust: 100%;
+  text-rendering: optimizeLegibility;
+}
+body {
+  margin: 0;
+  min-width: 320px;
+  background: rgb(var(--ground));
+  color: rgb(var(--ink));
+}
+::selection { background: rgb(var(--accent) / 0.25); }
+
+@layer components {
+  .container-page { @apply mx-auto w-full max-w-6xl px-4 sm:px-6 lg:px-8; }
+  .eyebrow { @apply font-mono text-[11px] font-medium uppercase tracking-[0.18em] text-muted; }
+  .link { @apply text-accent underline decoration-accent/30 underline-offset-4 hover:decoration-accent; }
+  .btn { @apply inline-flex items-center justify-center gap-2 rounded-md px-4 py-2.5 text-sm font-semibold transition-colors focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent disabled:opacity-50; }
+  .btn-primary { @apply btn bg-accent text-accent-ink hover:bg-accent-hover; }
+  .btn-ghost { @apply btn border border-line text-ink hover:border-ink/40; }
+  .field { @apply block w-full rounded-md border border-line bg-surface px-3 py-2.5 text-[15px] text-ink placeholder:text-muted/70 focus:border-accent focus:outline-none focus:ring-2 focus:ring-accent/20; }
+  .label { @apply mb-1.5 block text-sm font-medium; }
+  .card { @apply rounded-xl border border-line bg-surface; }
+  .placeholder-tag { @apply rounded bg-warn-soft px-1 font-mono text-[0.8em] text-warn; }
+}
