@@ -25,6 +25,10 @@ Unconfirmed facts are written as `[PLACEHOLDER: ...]` and render highlighted. Se
 
 Requires Python 3.12+ and Node 18+.
 
+**Quick start (macOS):** double-click `Start Website.command`. On first run it sets up everything it needs: the Python environment, dependencies, an `api/.env` with fresh local secrets, database migrations, and npm packages. It then starts the API (port 8100) and the site (port 5180) and opens your browser. Closing the window or pressing Ctrl+C stops both servers.
+
+Manual steps:
+
 ```bash
 # API
 cd api
