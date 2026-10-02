@@ -40,6 +40,10 @@ export const routes: RouteRecord[] = [
     path: '/admin',
     element: <PortalLayout role="admin" />,
     entry: 'src/components/PortalLayout.tsx',
-    children: [{ index: true, lazy: () => import('./admin/Investors') }],
+    children: [
+      { index: true, lazy: () => import('./admin/Investors') },
+      { path: 'sync', lazy: () => import('./admin/Sync') },
+      { path: 'audit', lazy: () => import('./admin/Audit') },
+    ],
   },
 ]

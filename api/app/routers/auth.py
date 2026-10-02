@@ -123,10 +123,13 @@ def login(request: Request, response: Response, body: LoginIn, db: DB = Depends(
         db.commit()
         raise HTTPException(401, GENERIC_LOGIN_ERROR)
 
-    stage = "mfa" if user.mfa_enabled else "enroll"
-    start_session(db, response, request, user, stage)
+    if not user.mfa_enabled:
+        # MFA enrolment is only reachable through a fresh invite link. Otherwise
+        # anyone holding just the password could register their own authenticator.
+        raise HTTPException(401, "Two-step verification is not set up for this account. Please ask for a new invitation.")
+    start_session(db, response, request, user, "mfa")
     db.commit()
-    return {"next": stage}
+    return {"next": "mfa"}
 
 
 # ---- TOTP enrolment ----

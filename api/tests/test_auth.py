@@ -178,3 +178,14 @@ def test_security_events_are_audited():
     with SessionLocal() as s:
         actions = [a.action for a in s.scalars(select(AuditLog))]
     assert "auth.login_failed" in actions and "auth.login" in actions
+
+
+def test_password_alone_cannot_reach_mfa_enrolment():
+    """A user without MFA (e.g. accepted an invite but never enrolled) must
+    not be able to enrol an authenticator with just their password."""
+    token = invite("half@example.test")
+    client().post("/api/auth/invite/accept", json={"token": token, "password": PASSWORD})
+    c = client()
+    r = c.post("/api/auth/login", json={"email": "half@example.test", "password": PASSWORD})
+    assert r.status_code == 401
+    assert c.get("/api/auth/mfa/setup").status_code == 401

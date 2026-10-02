@@ -61,11 +61,15 @@ export default function PortalLayout({ role }: { role: Me['role'] }) {
         {ready ? <Outlet context={me} /> : <div className="container-page text-sm text-muted">Loading…</div>}
       </main>
       <footer className="border-t border-line py-6">
+        {role === 'admin' ? (
+          <p className="container-page text-xs text-muted">Admin area. Every action here is recorded in the audit log.</p>
+        ) : (
         <p className="container-page text-xs leading-relaxed text-muted">
           Confidential. For the named investor only. Figures are unaudited and provided for information; your official
           statements prevail. Past performance is not indicative of future results.{' '}
           <span className="placeholder-tag">[PLACEHOLDER: counsel to confirm portal disclaimer]</span>
         </p>
+        )}
       </footer>
     </div>
   )
