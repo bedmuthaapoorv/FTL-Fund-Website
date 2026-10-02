@@ -1,5 +1,6 @@
 import type { RouteRecord } from 'vite-react-ssg'
 import Layout from './components/Layout'
+import PortalLayout from './components/PortalLayout'
 import { insights, legalOrder } from './lib/content'
 
 export const routes: RouteRecord[] = [
@@ -24,7 +25,21 @@ export const routes: RouteRecord[] = [
         getStaticPaths: () => legalOrder.map((s) => `legal/${s}`),
       },
       { path: 'login', lazy: () => import('./pages/Login') },
+      { path: 'invite', lazy: () => import('./pages/Invite') },
+      { path: 'enroll', lazy: () => import('./pages/Enroll') },
       { path: '*', lazy: () => import('./pages/NotFound') },
     ],
+  },
+  {
+    path: '/portal',
+    element: <PortalLayout role="investor" />,
+    entry: 'src/components/PortalLayout.tsx',
+    children: [{ index: true, lazy: () => import('./portal/Overview') }],
+  },
+  {
+    path: '/admin',
+    element: <PortalLayout role="admin" />,
+    entry: 'src/components/PortalLayout.tsx',
+    children: [{ index: true, lazy: () => import('./admin/Investors') }],
   },
 ]
