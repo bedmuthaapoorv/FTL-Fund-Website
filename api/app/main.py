@@ -5,7 +5,7 @@ from slowapi.errors import RateLimitExceeded
 from .config import get_settings
 from .ratelimit import limiter
 from .csrf import CSRFMiddleware
-from .routers import admin, auth, contact, investor
+from .routers import admin, auth, contact, investor, sync
 
 
 def create_app() -> FastAPI:
@@ -19,7 +19,7 @@ def create_app() -> FastAPI:
     app.state.limiter = limiter
     app.add_exception_handler(RateLimitExceeded, _rate_limit_exceeded_handler)
     app.add_middleware(CSRFMiddleware)
-    for r in (contact, auth, investor, admin):
+    for r in (contact, auth, investor, admin, sync):
         app.include_router(r.router)
 
     @app.get("/api/health")
