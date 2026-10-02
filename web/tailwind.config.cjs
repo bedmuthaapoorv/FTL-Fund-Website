@@ -22,6 +22,7 @@ module.exports = {
           soft: 'rgb(var(--accent-soft) / <alpha-value>)',
           ink: 'rgb(var(--accent-ink) / <alpha-value>)',
         },
+        chart: 'rgb(var(--chart) / <alpha-value>)',
         warn: {
           DEFAULT: 'rgb(var(--warn) / <alpha-value>)',
           soft: 'rgb(var(--warn-soft) / <alpha-value>)',

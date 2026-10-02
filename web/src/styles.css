@@ -16,6 +16,7 @@
   --accent-ink: 255 255 255; /* text on accent fills */
   --warn: 146 86 14;
   --warn-soft: 253 246 232;
+  --chart: 43 128 80;        /* #2B8050, validated (dataviz) on light surface */
   color-scheme: light;
 }
 [data-theme='dark'] {
@@ -30,6 +31,7 @@
   --accent-ink: 13 16 14;
   --warn: 232 185 110;
   --warn-soft: 40 32 18;
+  --chart: 79 160 108;       /* #4FA06C, validated on dark surface */
   color-scheme: dark;
 }
 
