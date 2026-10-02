@@ -32,6 +32,20 @@ class Settings(BaseSettings):
     # Shared secret for the FrontierTradeLight sync push (HMAC-SHA256).
     sync_secret: str = ""
 
+    # Fernet key encrypting TOTP secrets at rest. Generate with:
+    #   python -c "from cryptography.fernet import Fernet; print(Fernet.generate_key().decode())"
+    data_encryption_key: str = ""
+
+    # Session lifetimes.
+    session_idle_minutes: int = 30
+    session_absolute_hours: int = 8
+    mfa_step_minutes: int = 5
+    invite_valid_hours: int = 72
+
+    # Account lockout after repeated failures (password or MFA).
+    lockout_threshold: int = 5
+    lockout_minutes: int = 15
+
     @property
     def secure_cookies(self) -> bool:
         return self.env == "prod"

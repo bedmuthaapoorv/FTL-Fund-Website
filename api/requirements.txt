@@ -8,3 +8,5 @@ pwdlib[argon2]==0.2.*
 pyotp==2.9.*
 slowapi==0.1.*
 psycopg[binary]==3.2.*
+cryptography==44.*
+segno==1.6.*
